@@ -1,5 +1,5 @@
 from pydantic import BaseModel # pydantic is a data validation and settings management library that uses Python type annotations to validate and serialize data. It is commonly used in FastAPI to define request and response models, ensuring that the data sent to and from the API adheres to the specified structure and types.
-from typing import Optional # Optional is used to indicate that a field can be of a certain type or None. It is commonly used in FastAPI to define optional fields in request and response models, allowing for more flexible data structures.
+from typing import List, Optional # Optional is used to indicate that a field can be of a certain type or None. It is commonly used in FastAPI to define optional fields in request and response models, allowing for more flexible data structures.
 
 class ProductBase(BaseModel): # ProductBase is a Pydantic model that defines the common attributes for a product, such as name, description, price, and quantity. This model can be used as a base class for other models that represent different operations on products, such as creating a new product or updating an existing product. By using a base model, we can avoid code duplication and ensure consistency in the data structure across different operations.
     name: str
@@ -28,3 +28,10 @@ class ProductAPIResponse(BaseModel): # ProductAPIResponse is a Pydantic model th
     status_code: int
     message: str
     product: ProductResponse
+
+
+class ProductsAPIResponse(BaseModel):
+    status: str
+    status_code: int
+    message: str
+    products: List[ProductResponse]

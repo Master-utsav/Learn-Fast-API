@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-sqlalchemy
+SQLAlchemy
 psycopg2
 python-dotenv
 pydantic

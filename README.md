@@ -48,22 +48,34 @@ Example:
 .\venv\Scripts\Activate.ps1
 ```
 
----
+## Setup Environment Variables
 
-## Install Dependencies
+Create a `.env` file and add your database URL.
 
-```bash
-pip install -r requirements.txt
+### PostgreSQL
+
+```env
+DB_URL=postgresql+psycopg2://USERNAME:PASSWORD@localhost:5432/DATABASE_NAME
 ```
 
 ---
 
-## Setup Environment Variables
+### MySQL
 
-Create a `.env` file and add your PostgreSQL URL:
+Replace `psycopg2` with `pymysql` inside `requirements.txt`, then use:
 
 ```env
-DB_URL=postgresql://USERNAME:PASSWORD@localhost:5432/DATABASE_NAME
+DB_URL=mysql+pymysql://USERNAME:PASSWORD@localhost:3306/DATABASE_NAME
+```
+
+---
+
+---
+
+## After env - Install Dependencies
+
+```bash
+pip install -r requirements.txt
 ```
 
 ---

@@ -5,7 +5,7 @@ class Product(Base): # Product is a SQLAlchemy model that represents the product
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
+    name = Column(String(255), nullable=False) # make sure of adding String(255) to specify the maximum length of the string, and nullable=False to ensure that the name field cannot be null in the database. Postgres will not complain for this if you leave String() without a length, but MySQL will throw an error. So it's a good practice to specify the length of the string when defining string columns in SQLAlchemy models, especially if you want to ensure compatibility with different database systems.
+    description = Column(String(500), nullable=False)
     price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)

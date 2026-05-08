@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status , Depends
 from models import Product
-from database import db_session, get_db, engine, Base
-from schema import ProductCreate, ProductAPIResponse, ProductUpdatePartail
+from database import db_session, engine, Base, get_db
+from schema import ProductCreate, ProductAPIResponse, ProductUpdatePartail, ProductsAPIResponse
 from sqlalchemy.orm import Session  #type: ignore
 from localdb import products
 import os
@@ -9,7 +9,8 @@ import os
 Base.metadata.create_all(bind=engine) # create the tables in the database if they don't exist
 
 app = FastAPI() # create a FastAPI instance
-
+    
+# Initialize the database with the products from the localdb if the database is empty
 def init_db():
     db = db_session() # depends(get_db) only work inside the route handlers, so we have to create a db session manually here
     if db.query(Product).count() == 0: # if there are no products in the database, then we will add the products from the localdb
@@ -28,7 +29,7 @@ def health_check():
     }
 
 # CRUD endpoints for products
-@app.get("/product", status_code=status.HTTP_200_OK, response_model=ProductAPIResponse) # response_model = (The model to use for the response. It can be used to validate and serialize the response data.)
+@app.get("/product", status_code=status.HTTP_200_OK, response_model=ProductsAPIResponse) # response_model = (The model to use for the response. It can be used to validate and serialize the response data.)
 def get_products(db: Session = Depends(get_db)): # Depends(get_db) is used to get a database session for the route handler. It will automatically close the database session after the request is finished.
     products = db.query(Product).all() # query the database to get all the products
 
@@ -43,7 +44,6 @@ def get_products(db: Session = Depends(get_db)): # Depends(get_db) is used to ge
 @app.get("/product/{product_id}", status_code=status.HTTP_200_OK, response_model=ProductAPIResponse) # response_model = (The model to ... response data.)
 def get_product(product_id: int, db: Session = Depends(get_db)): 
     product = db.query(Product).filter(Product.id == product_id).first() # query the database to get the product with the given id. first() is used to get the first result of the query, which is the product with the given id. If there is no product with the given id, then it will return None.
-    
     if not product:
         raise HTTPException( # HTTPException is used to raise an exception with a specific status code and detail message. In this case, we are raising a 404 Not Found exception if the product with the given id is not found in the database.
             status_code=404,
@@ -161,6 +161,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app", # "main" is the name of the Python file (without the .py extension) and "app" is the name of the FastAPI instance we created in this file.
         host= os.getenv("HOST", "127.0.0.1"), # The host address to bind the server to. "
-        port= int(os.getenv("PORT", 5000)), # The port number to bind the server to. You can choose any available port number.
+        port= int(os.getenv("PORT", 3000)), # The port number to bind the server to. You can choose any available port number.
         reload=True # Enable auto-reload for development. This will automatically restart the server whenever you make changes to the code, which is useful during development. You can set it to False in production for better performance.
     )
